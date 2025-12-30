@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#     "httpx>=0.27.0",
+#     "ijson>=3.2.0",
+#     "polars>=1.0.0",
+#     "pyarrow>=15.0.0",
+# ]
+# ///
 """
 Download and convert Brønnøysundregistrene roller data from JSON.gz to Parquet.
 
@@ -13,7 +22,7 @@ from collections.abc import Generator, Iterator
 from contextlib import contextmanager
 from io import BytesIO
 from pathlib import Path
-from typing import IO, Any
+from typing import IO, Any, cast
 
 import httpx
 import ijson
@@ -181,7 +190,7 @@ def open_json_stream(
         # Read from local gzip file
         print(f"Reading from local file: {local_path}")
         with gzip.open(local_path, "rb") as f:
-            yield f
+            yield cast(IO[bytes], f)
     else:
         # Download from URL
         if not url:
@@ -213,7 +222,7 @@ def open_json_stream(
                     print(f"Reading from saved file: {save_json_path}")
                     
                     with gzip.open(save_json_path, "rb") as f:
-                        yield f
+                        yield cast(IO[bytes], f)
                 else:
                     # Stream and decompress on-the-fly
                     # Collect all data since ijson needs seekable stream for some backends
@@ -231,7 +240,7 @@ def open_json_stream(
                     compressed_data.seek(0)
                     
                     with gzip.GzipFile(fileobj=compressed_data) as f:
-                        yield f
+                        yield cast(IO[bytes], f)
 
 
 def parse_organizations(json_stream: IO[bytes]) -> Generator[dict[str, Any], None, None]:

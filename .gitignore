@@ -10,8 +10,7 @@ wheels/
 .venv
 .python-version
 
-# testdata
+# datafiles
 json_example.json
-
-# output
+*.json.gz
 *.parquet
