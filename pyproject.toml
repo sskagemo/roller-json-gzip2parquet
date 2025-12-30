@@ -12,4 +12,4 @@ dependencies = [
 ]
 
 [project.scripts]
-roller-json-gzip2parquet = "main:main"
+roller-json-gzip2parquet = "roller_json_gzip2parquet:main"
